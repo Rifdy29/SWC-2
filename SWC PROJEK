@@ -1,0 +1,561 @@
+MAIN APP
+
+import javax.swing.*;
+import java.awt.*;
+
+public class MainApp {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Vape Inventory Management System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(800, 600);
+        frame.setLayout(new CardLayout());
+
+        // Main panel to hold all cards
+        JPanel mainPanel = new JPanel(new CardLayout());
+
+        // Welcome page
+        JPanel welcomePanel = new JPanel(new BorderLayout());
+        ImageIcon imageIcon = new ImageIcon("C:\\Users\\User\\Downloads\\PROJEK\\AMBA.png"); // Replace with the path to your image
+        JLabel imageLabel = new JLabel(imageIcon);
+        welcomePanel.add(imageLabel, BorderLayout.CENTER);
+
+        // Add Sign-In Form panel
+        SignInForm signInForm = new SignInForm(mainPanel);
+        mainPanel.add(signInForm.getPanel(), "SignIn");
+
+        // Add Inventory Management panel
+        InventoryManagement inventoryManagement = new InventoryManagement(mainPanel);
+        mainPanel.add(inventoryManagement.getPanel(), "Inventory");
+
+        // Add Supplier Management panel
+        SupplierManagement supplierManagement = new SupplierManagement(mainPanel);
+        mainPanel.add(supplierManagement.getPanel(), "Supplier");
+
+        // Buttons for the welcome panel
+        JPanel buttonPanel = new JPanel();
+        JButton startButton = new JButton("Start");
+        startButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) (mainPanel.getLayout());
+            cl.show(mainPanel, "SignIn");
+        });
+
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(e -> System.exit(0));
+
+        buttonPanel.add(startButton);
+        buttonPanel.add(cancelButton);
+
+        welcomePanel.add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(welcomePanel, "Welcome");
+
+        // Show welcome panel on startup
+        frame.add(mainPanel);
+        CardLayout cl = (CardLayout) (mainPanel.getLayout());
+        cl.show(mainPanel, "Welcome");
+
+        // Make the frame visible
+        frame.setVisible(true);
+    }
+}
+
+SIGN IN FORM
+
+import javax.swing.*;
+import java.awt.*;
+
+public class SignInForm {
+    private JPanel panel;
+
+    public SignInForm(JPanel mainPanel) {
+        panel = new JPanel(new BorderLayout());
+
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel userLabel = new JLabel("Username:");
+        JTextField userField = new JTextField(10);
+        JLabel passLabel = new JLabel("Password:");
+        JPasswordField passField = new JPasswordField(10);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(userLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(userField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(passLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(passField, gbc);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton loginButton = new JButton("Login");
+        JButton backButton = new JButton("Back");
+
+        buttonPanel.add(loginButton);
+        buttonPanel.add(backButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        loginButton.addActionListener(e -> {
+            String username = userField.getText();
+            String password = new String(passField.getPassword());
+
+            if (username.equals("admin") && password.equals("admin")) {
+                CardLayout cl = (CardLayout) (mainPanel.getLayout());
+                cl.show(mainPanel, "Inventory");
+            } else {
+                JOptionPane.showMessageDialog(panel, "Invalid username or password.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        backButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) (mainPanel.getLayout());
+            cl.show(mainPanel, "Welcome");
+        });
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+}
+
+INVENTORY MANAGEMENT 
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class InventoryManagement {
+    private JPanel panel;
+    private List<Item> items;
+
+    public InventoryManagement(JPanel mainPanel) {
+        items = new ArrayList<>();
+        panel = new JPanel(new BorderLayout());
+
+        // Create the form panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel categoryLabel = new JLabel("Brand:");
+        JComboBox<String> categoryComboBox = new JComboBox<>(new String[]{"VOLTBAR", "VAPE TAPE", "ELF BAR LOWIT" ,"LANA ULTRA " , "ALADDIN "});
+        JLabel itemNameLabel = new JLabel("Item Name:");
+        JComboBox<String> itemNameComboBox = new JComboBox<>(new String[]{"CHOCALATE", "VANILA", "CARAMEL" ,"POPCORN " , "STARWBERRY ICE","MANGO ","WATERMELON"});
+        JLabel priceLabel = new JLabel("Price (Each):");
+        JTextField priceField = new JTextField(10);
+        JLabel quantityLabel = new JLabel("Quantity:");
+        JTextField quantityField = new JTextField(10);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(categoryLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(categoryComboBox, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(itemNameLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(itemNameComboBox, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(priceLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(priceField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(quantityLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(quantityField, gbc);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // Create button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton addItemButton = new JButton("Add Item");
+        JButton updateItemButton = new JButton("Update Item");
+        JButton backToMenuButton = new JButton("Back to Menu");
+        JButton supplierManagementButton = new JButton("Supplier Management");
+        JButton generateReportButton = new JButton("Generate Report");
+
+        buttonPanel.add(addItemButton);
+        buttonPanel.add(updateItemButton);
+        buttonPanel.add(backToMenuButton);
+        buttonPanel.add(supplierManagementButton);
+        buttonPanel.add(generateReportButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add action listeners
+        backToMenuButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) (mainPanel.getLayout());
+            cl.show(mainPanel, "SignIn");
+        });
+
+        supplierManagementButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) (mainPanel.getLayout());
+            cl.show(mainPanel, "Supplier");
+        });
+
+        addItemButton.addActionListener(e -> {
+            String category = (String) categoryComboBox.getSelectedItem();
+            String itemName = (String) itemNameComboBox.getSelectedItem();
+            double price;
+            int quantity;
+            try {
+                price = Double.parseDouble(priceField.getText());
+                quantity = Integer.parseInt(quantityField.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(panel, "Please enter valid price and quantity.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            Item newItem = new Item(category, itemName, price, quantity);
+            items.add(newItem);
+            JOptionPane.showMessageDialog(panel, "Item added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        generateReportButton.addActionListener(e -> {
+            InventoryReport report = new InventoryReport(this);
+            report.generateReport();
+        });
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    public class Item {
+        private String category;
+        private String name;
+        private double price;
+        private int quantity;
+
+        public Item(String category, String name, double price, int quantity) {
+            this.category = category;
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+
+        public String getCategory() {
+            return category;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public double calculateTotalValue() {
+            return price * quantity;
+        }
+    }
+}
+
+INVENTORY REPORT
+
+import javax.swing.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+
+public class InventoryReport {
+    private InventoryManagement inventoryManagement;
+
+    public InventoryReport(InventoryManagement inventoryManagement) {
+        this.inventoryManagement = inventoryManagement;
+    }
+
+    public void generateReport() {
+        StringBuilder reportContent = new StringBuilder();
+
+        reportContent.append("Inventory Management Report\n");
+        reportContent.append("================================\n\n");
+
+        reportContent.append(String.format("%-15s %-20s %-15s %-10s %-15s\n", "Category", "Item Name", "Price (Each)", "Quantity", "Total Value"));
+        reportContent.append("---------------------------------------------------------------------------\n");
+
+        // Append details of each item in the inventory
+        for (InventoryManagement.Item item : inventoryManagement.getItems()) {
+            reportContent.append(String.format("%-15s %-20s %-15s %-10d %-15.2f\n", 
+                item.getCategory(), item.getName(), item.getPrice(), item.getQuantity(), item.calculateTotalValue()));
+        }
+
+        // Save the report to a text file
+        try (FileWriter writer = new FileWriter("InventoryReport.txt")) {
+            writer.write(reportContent.toString());
+            JOptionPane.showMessageDialog(null, "Report generated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error generating report: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
+
+VAPE ITEM
+
+public class VapeItem {
+    private String itemName;
+    private String levelCategory;
+    private double price;
+    private int quantity;
+
+    public VapeItem(String itemName, String levelCategory, double price, int quantity) {
+        this.itemName = itemName;
+        this.levelCategory = levelCategory;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public String getLevelCategory() {
+        return levelCategory;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public double calculateTotalValue() {
+        return this.price * this.quantity;
+    }
+}
+
+SUPPLIER MANAGEMENT
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class SupplierManagement {
+    private JPanel panel; 
+    private ArrayList<Supplier> suppliers;
+
+    private JTextField supplierIDField;
+    private JTextField nameField;
+    private JTextField contactField;
+    private JTextField emailField;
+    private JTable supplierTable;
+    private DefaultTableModel tableModel;
+
+    public SupplierManagement(JPanel mainPanel) {
+        panel = new JPanel(new BorderLayout());
+        suppliers = new ArrayList<>();
+
+        // Create the form panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
+
+        JLabel supplierIDLabel = new JLabel("Supplier ID:");
+        supplierIDField = new JTextField(10);
+        JLabel nameLabel = new JLabel("Name:");
+        nameField = new JTextField(10);
+        JLabel contactLabel = new JLabel("Contact:");
+        contactField = new JTextField(10);
+        JLabel emailLabel = new JLabel("Email:");
+        emailField = new JTextField(10);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(supplierIDLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(supplierIDField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(nameLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(nameField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(contactLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(contactField, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(emailLabel, gbc);
+        gbc.gridx = 1;
+        formPanel.add(emailField, gbc);
+
+        panel.add(formPanel, BorderLayout.NORTH);
+
+        // Create the table
+        String[] columnNames = {"Supplier ID", "Name", "Contact", "Email"};
+        tableModel = new DefaultTableModel(columnNames, 0);
+        supplierTable = new JTable(tableModel);
+
+        JScrollPane scrollPane = new JScrollPane(supplierTable);
+        panel.add(scrollPane, BorderLayout.CENTER);
+
+        // Create button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton addSupplierButton = new JButton("Add Supplier");
+        JButton editSupplierButton = new JButton("Edit Supplier");
+        JButton deleteSupplierButton = new JButton("Delete Supplier");
+        JButton backToMenuButton = new JButton("Back to Menu");
+
+        buttonPanel.add(addSupplierButton);
+        buttonPanel.add(editSupplierButton);
+        buttonPanel.add(deleteSupplierButton);
+        buttonPanel.add(backToMenuButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Add action listeners
+        addSupplierButton.addActionListener(e -> addSupplier());
+        editSupplierButton.addActionListener(e -> editSupplier());
+        deleteSupplierButton.addActionListener(e -> deleteSupplier());
+        backToMenuButton.addActionListener(e -> {
+            CardLayout cl = (CardLayout) (mainPanel.getLayout());
+            cl.show(mainPanel, "Inventory");
+        });
+    }
+
+    private void addSupplier() {
+        String supplierID = supplierIDField.getText();
+        String name = nameField.getText();
+        String contact = contactField.getText();
+        String email = emailField.getText();
+
+        if (supplierID.isEmpty() || name.isEmpty() || contact.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(panel, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Supplier newSupplier = new Supplier(supplierID, name, contact, email);
+        suppliers.add(newSupplier);
+        tableModel.addRow(new Object[]{supplierID, name, contact, email});
+        clearFields();
+        JOptionPane.showMessageDialog(panel, "Supplier added successfully!");
+    }
+
+    private void editSupplier() {
+        int selectedRow = supplierTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(panel, "Please select a supplier to edit.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String supplierID = supplierIDField.getText();
+        String name = nameField.getText();
+        String contact = contactField.getText();
+        String email = emailField.getText();
+
+        if (supplierID.isEmpty() || name.isEmpty() || contact.isEmpty() || email.isEmpty()) {
+            JOptionPane.showMessageDialog(panel, "Please fill in all fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Supplier selectedSupplier = suppliers.get(selectedRow);
+        selectedSupplier.setSupplierID(supplierID);
+        selectedSupplier.setName(name);
+        selectedSupplier.setContact(contact);
+        selectedSupplier.setEmail(email);
+
+        tableModel.setValueAt(supplierID, selectedRow, 0);
+        tableModel.setValueAt(name, selectedRow, 1);
+        tableModel.setValueAt(contact, selectedRow, 2);
+        tableModel.setValueAt(email, selectedRow, 3);
+
+        clearFields();
+        JOptionPane.showMessageDialog(panel, "Supplier edited successfully!");
+    }
+
+    private void deleteSupplier() {
+        int selectedRow = supplierTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(panel, "Please select a supplier to delete.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        suppliers.remove(selectedRow);
+        tableModel.removeRow(selectedRow);
+        clearFields();
+        JOptionPane.showMessageDialog(panel, "Supplier deleted successfully!");
+    }
+
+    private void clearFields() {
+        supplierIDField.setText("");
+        nameField.setText("");
+        contactField.setText("");
+        emailField.setText("");
+    }
+
+    public JPanel getPanel() {
+        return panel;
+    }
+
+    // Inner class to represent a supplier
+    class Supplier {
+        private String supplierID;
+        private String name;
+        private String contact;
+        private String email;
+
+        public Supplier(String supplierID, String name, String contact, String email) {
+            this.supplierID = supplierID;
+            this.name = name;
+            this.contact = contact;
+            this.email = email;
+        }
+
+        public String getSupplierID() {
+            return supplierID;
+        }
+
+        public void setSupplierID(String supplierID) {
+            this.supplierID = supplierID;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getContact() {
+            return contact;
+        }
+
+        public void setContact(String contact) {
+            this.contact = contact;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    }
+}
